@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="bn">
-
 <head>
     <meta charset="UTF-8">
     <title>Islami song - Get lyrics and Watch videos</title>
@@ -18,6 +17,12 @@
             margin-bottom: 20px;
             border: 2px solid #ccc;
             border-radius: 6px;
+        }
+
+        #countDisplay {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #555;
         }
 
         ul {
@@ -46,9 +51,9 @@
 
     <h2>🔍 সার্চ করুন</h2>
     <input type="text" id="searchInput" placeholder="এখানে লিখুন...">
+    <p id="countDisplay">🎵</p> <!-- Auto-counted here -->
 
     <ul id="itemList">
-
         <li data-filename="test">টেস্ট</li>
         <li data-filename="aytarunno">আয় তারুণ্য আয়</li>
         <li data-filename="jamaterkormirasara">জামায়াতের কর্মীরা সারা পৃথিবীতে</li>
@@ -68,29 +73,37 @@
     <script>
         const searchInput = document.getElementById('searchInput');
         const itemList = document.getElementById('itemList');
+        const countDisplay = document.getElementById('countDisplay');
 
-        // 1️⃣ Step: Get all <li> elements into an array
         const itemsArray = Array.from(itemList.querySelectorAll('li'));
 
-        // 2️⃣ Step: Sort by text (including Bangla/English)
-        itemsArray.sort((a, b) => {
-            return a.textContent.trim().localeCompare(b.textContent.trim(), 'bn');
-        });
+        // Sort items alphabetically (Bangla-friendly)
+        itemsArray.sort((a, b) => a.textContent.trim().localeCompare(b.textContent.trim(), 'bn'));
 
-        // 3️⃣ Step: Clear and re-append sorted items
+        // Re-append sorted items
         itemList.innerHTML = '';
         itemsArray.forEach(item => itemList.appendChild(item));
 
-        // 4️⃣ Step: Live search
+        // Count function (Auto count visible items)
+        function updateCount() {
+            const visibleCount = itemsArray.filter(item => item.style.display !== 'none').length;
+            countDisplay.textContent = `🎵 মোট ${visibleCount}টি গান পাওয়া গেছে`;
+        }
+
+        // Initial count
+        updateCount();
+
+        // Live search with count update
         searchInput.addEventListener('input', function () {
             const filter = this.value.toLowerCase();
             itemsArray.forEach(item => {
                 const text = item.textContent.toLowerCase();
                 item.style.display = text.includes(filter) ? '' : 'none';
             });
+            updateCount();
         });
 
-        // 5️⃣ Step: Click event for navigation
+        // Redirect on click
         itemsArray.forEach(item => {
             item.addEventListener('click', () => {
                 const filename = item.getAttribute('data-filename');
@@ -100,5 +113,4 @@
     </script>
 
 </body>
-
 </html>
