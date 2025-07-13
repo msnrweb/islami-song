@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Live Search List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+
+        input[type="text"] {
+            width: 60%;
+            padding: 10px;
+            font-size: 18px;
+            margin-bottom: 20px;
+            border: 2px solid #ccc;
+            border-radius: 6px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        li:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>🔍 সার্চ করুন</h2>
+    <input type="text" id="searchInput" placeholder="এখানে লিখুন...">
+
+    <ul id="itemList">
+        <li data-filename="aam">আম</li>
+        <li data-filename="banana">Banana</li>
+        <li data-filename="কম্পিউটার">কম্পিউটার</li>
+        <li data-filename="apple">Apple</li>
+        <li data-filename="বাংলাদেশ">বাংলাদেশ</li>
+        <li data-filename="test">টেস্ট</li>
+    </ul>
+
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const itemList = document.getElementById('itemList');
+
+        // 1️⃣ Step: Get all <li> elements into an array
+        const itemsArray = Array.from(itemList.querySelectorAll('li'));
+
+        // 2️⃣ Step: Sort by text (including Bangla/English)
+        itemsArray.sort((a, b) => {
+            return a.textContent.trim().localeCompare(b.textContent.trim(), 'bn');
+        });
+
+        // 3️⃣ Step: Clear and re-append sorted items
+        itemList.innerHTML = '';
+        itemsArray.forEach(item => itemList.appendChild(item));
+
+        // 4️⃣ Step: Live search
+        searchInput.addEventListener('input', function () {
+            const filter = this.value.toLowerCase();
+            itemsArray.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(filter) ? '' : 'none';
+            });
+        });
+
+        // 5️⃣ Step: Click event for navigation
+        itemsArray.forEach(item => {
+            item.addEventListener('click', () => {
+                const filename = item.getAttribute('data-filename');
+                window.location.href = `lyrics/${filename}.html`;
+            });
+        });
+    </script>
+
+</body>
+
+</html>
